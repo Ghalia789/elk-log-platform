@@ -1,0 +1,22 @@
+# secrets and local config
+.env
+*.pem
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+# editors / OS
+.idea/
+.vscode/
+.DS_Store
+# runtime data
+uploads/*
+!uploads/.gitkeep
+*.log
+sincedb*
+# generated sample data
+scripts/out/
