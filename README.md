@@ -45,8 +45,8 @@ requirements, then generate CSV or newline-delimited JSON logs:
 
 ```bash
 pip install -r webapp/requirements.txt
-python scripts/faker_data.py --count 1000 --format json --output uploads/sample.json
-python scripts/faker_data.py --count 1000 --format csv --output uploads/sample.csv
+python scripts/generate_logs.py --count 1000 --format json --output uploads/sample.json
+python scripts/generate_logs.py --count 1000 --format csv --output uploads/sample.csv
 ```
 
 The default count is 10,000 logs. Use `--output -` to write the selected
