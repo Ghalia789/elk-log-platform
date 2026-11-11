@@ -1,66 +1,85 @@
-# Log Monitoring & Analysis Platform
+# LogLens
 
-Mini-Project ELK / NoSQL / Docker - IT Business School (3GLA, Scenario D: SaaS)
-Student: Ghalia Bellalouna - Instructor: Mr. Mohamed Najeh Issaoui
+## Overview
 
-Upload CSV / JSON / TXT log files, index them with Logstash into Elasticsearch, then search, export and visualize them (Flask web app + Kibana). Module G adds alerting; module K adds tests and CI.
+LogLens is a SaaS log monitoring platform for uploading CSV, JSON, and TXT log
+files, parsing them with Logstash, indexing them in Elasticsearch, and
+searching or visualizing them through Flask and Kibana.
 
-## Stack
-Flask 3, Elasticsearch 8, Logstash 8, Kibana 8, MongoDB 7, Redis 7, Docker Compose.
+## Architecture
+
+The Flask application stores uploaded files in the shared `uploads` volume as
+`<upload_id>__<original_name>`. Logstash reads that volume, parses the files,
+and sends events to Elasticsearch in `logs-saas-*` indices. MongoDB stores file
+metadata and search history, while Redis stores cache entries and sessions.
+
+The ELK services communicate over the `elk-net` Docker bridge network.
+
+## Requirements
+
+- Docker Engine with Docker Compose v2
+- At least 4 GB of available memory for the local stack
+- A Unix-like shell or equivalent Docker environment
 
 ## Quick start
 
 ```bash
 cp .env.example .env
-docker compose up
+docker compose up -d
+docker compose ps
 ```
-Web app: http://localhost:8000 - Kibana: http://localhost:5601
 
-The Compose stack uses the `ELK_VERSION` value from `.env` for Elasticsearch,
-Kibana, and Logstash. To start in the background, use `docker compose up -d`.
+Open Kibana at http://localhost:5601. Stop the stack with:
 
-Service checks:
+```bash
+docker compose down
+```
+
+Named volumes retain Elasticsearch data, Logstash sincedb state, and uploaded
+files between restarts.
+
+## Environment variables
+
+Configuration is supplied through `.env`; do not commit that file.
+
+| Variable | Example | Purpose |
+|---|---|---|
+| `ELK_VERSION` | `8.15.3` | Shared Elasticsearch, Kibana, and Logstash image tag |
+| `ES_JAVA_OPTS` | `-Xms512m -Xmx512m` | Elasticsearch heap size |
+| `ES_HOST` | `http://elasticsearch:9200` | Elasticsearch URL used by application services |
+| `MONGO_URI` | `mongodb://mongo:27017/logs` | MongoDB connection string |
+| `REDIS_URL` | `redis://redis:6379/0` | Redis connection string |
+| `UPLOAD_DIR` | `/uploads` | Upload directory used by Flask |
+| `MAX_UPLOAD_MB` | `50` | Maximum upload size |
+
+Copy `.env.example` to `.env` and adjust values for the local environment.
+
+## Services and ports
+
+| Service | Port | Purpose |
+|---|---:|---|
+| Elasticsearch | 9200 | Search and log storage |
+| Kibana | 5601 | Dashboards and visualization |
+| Logstash | 9600 | Logstash monitoring API |
+| Flask webapp | 8000 | Upload and search API/UI |
+| MongoDB | 27017 | Metadata and search history |
+| Redis | 6379 | Cache and sessions |
+
+Check the ELK services with:
 
 ```bash
 curl http://localhost:9200/_cluster/health
 curl http://localhost:5601/api/status
 curl http://localhost:9600/?pretty
-docker compose ps
 ```
 
-The first two endpoints are also used by the Compose healthchecks. The Logstash
-API reports pipeline status on port 9600. Stop the stack with
-`docker compose down`; named volumes retain Elasticsearch data, Logstash
-sincedb state, and uploaded files.
+## Troubleshooting
 
-## Repository layout
-| Path | Content |
-|---|---|
-| `webapp/` | Flask app (API + Jinja2 UI) |
-| `alert-worker/` | Alert evaluation worker (module G) |
-| `logstash/pipelines/` | csv / json (+txt) pipelines |
-| `elasticsearch/` | Index template `logs-saas-*` |
-| `kibana/` | Exported visualizations and dashboard (ndjson) |
-| `scripts/` | Faker log generator |
-| `tests/` | pytest suite (module K) |
-| `uploads/` | Shared volume watched by Logstash (git-ignored) |
-| `docs/` | Analysis, architecture, figures |
-| `.github/workflows/` | CI (module K) |
-
-## Documentation
-- `docs/figures/ELK_architecture_figures.drawio` - C4 and sequence diagrams
-- Analysis and architecture documents: add exports to `docs/`
-
-## Progress
-| Week | Epic | Status |
-|---|---|---|
-| W1 | Analysis and design | In progress |
-| W2 | Setup and infrastructure | Not started |
-| W3 | Backend core | Not started |
-| W4 | Frontend and Kibana | Not started |
-| W5 | Modules G and K | Not started |
-| W6 | Finalize and deliver | Not started |
-
-## Workflow
-- Branches: `main` (stable) and short-lived `feature/ELK-<n>-<name>` branches, merged by pull request.
-- Commits reference the Jira key, e.g. `ELK-12: add Flask skeleton`.
+- View service logs with `docker compose logs -f <service>`.
+- Check container state with `docker compose ps`.
+- If Elasticsearch is unhealthy, confirm Docker has enough memory and inspect
+  `docker compose logs elasticsearch`.
+- If Logstash does not process uploads, confirm the file is in the shared
+  `uploads` volume and that a configuration exists in `logstash/pipeline/`.
+- Recreate containers without deleting data with `docker compose up -d --force-recreate`.
+- To remove all named volumes and their data, use `docker compose down -v`.

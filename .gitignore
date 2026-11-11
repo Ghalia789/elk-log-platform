@@ -1,5 +1,7 @@
 # secrets and local config
 .env
+.env.*
+!.env.example
 *.pem
 # Python
 __pycache__/
@@ -13,6 +15,11 @@ htmlcov/
 .idea/
 .vscode/
 .DS_Store
+# Docker
+.docker/
+docker-data/
+docker-compose.override.yml
+*.tar
 # runtime data
 uploads/*
 !uploads/.gitkeep

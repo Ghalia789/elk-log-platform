@@ -46,7 +46,7 @@ services:
     ports:
       - "9600:9600"
     volumes:
-      - ./logstash/pipelines:/usr/share/logstash/pipeline:ro
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
       - uploads:/usr/share/logstash/uploads:ro
       - logstashdata:/usr/share/logstash/data
     networks:
