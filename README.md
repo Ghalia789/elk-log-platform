@@ -38,6 +38,20 @@ docker compose down
 Named volumes retain Elasticsearch data, Logstash sincedb state, and uploaded
 files between restarts.
 
+## Generate sample logs
+
+Faker is included in `webapp/requirements.txt`. Install the project
+requirements, then generate CSV or newline-delimited JSON logs:
+
+```bash
+pip install -r webapp/requirements.txt
+python scripts/faker_data.py --count 1000 --format json --output uploads/sample.json
+python scripts/faker_data.py --count 1000 --format csv --output uploads/sample.csv
+```
+
+The default count is 10,000 logs. Use `--output -` to write the selected
+format to standard output.
+
 ## Environment variables
 
 Configuration is supplied through `.env`; do not commit that file.
