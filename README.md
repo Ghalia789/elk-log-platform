@@ -9,13 +9,29 @@ Upload CSV / JSON / TXT log files, index them with Logstash into Elasticsearch, 
 Flask 3, Elasticsearch 8, Logstash 8, Kibana 8, MongoDB 7, Redis 7, Docker Compose.
 
 ## Quick start
-> Available from week 2 (`docker-compose.yml` not added yet).
 
 ```bash
 cp .env.example .env
 docker compose up
 ```
 Web app: http://localhost:8000 - Kibana: http://localhost:5601
+
+The Compose stack uses the `ELK_VERSION` value from `.env` for Elasticsearch,
+Kibana, and Logstash. To start in the background, use `docker compose up -d`.
+
+Service checks:
+
+```bash
+curl http://localhost:9200/_cluster/health
+curl http://localhost:5601/api/status
+curl http://localhost:9600/?pretty
+docker compose ps
+```
+
+The first two endpoints are also used by the Compose healthchecks. The Logstash
+API reports pipeline status on port 9600. Stop the stack with
+`docker compose down`; named volumes retain Elasticsearch data, Logstash
+sincedb state, and uploaded files.
 
 ## Repository layout
 | Path | Content |
