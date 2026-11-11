@@ -89,7 +89,7 @@ def build_log_record(faker: Faker) -> dict[str, object]:
         "response_time_ms": response_time,
         "client_ip": faker.ipv4(),
         "user_id": f"user_{faker.uuid4(cast_to=None)}",
-        "trace_id": faker.uuid4(cast_to=None).replace("-", ""),
+        "trace_id": str(faker.uuid4(cast_to=None)).replace("-", ""),
         "message": message,
     }
 
