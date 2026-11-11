@@ -1,5 +1,7 @@
 - pipeline.id: csv
   path.config: "/usr/share/logstash/pipeline/csv.conf"
+  pipeline.workers: 1
 
 - pipeline.id: json
   path.config: "/usr/share/logstash/pipeline/json.conf"
+  pipeline.workers: 1

@@ -45,11 +45,12 @@ services:
   logstash:
     image: docker.elastic.co/logstash/logstash:${ELK_VERSION}
     restart: unless-stopped
-    command: ["logstash", "-f", "/usr/share/logstash/pipeline", "--path.data", "/usr/share/logstash/data"]
+    command: ["logstash", "--path.data", "/usr/share/logstash/data"]
     ports:
       - "9600:9600"
     volumes:
       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+      - ./logstash/pipeline/pipelines.yml:/usr/share/logstash/config/pipelines.yml:ro
       - uploads:/usr/share/logstash/uploads:ro
       - logstashdata:/usr/share/logstash/data
     networks:
