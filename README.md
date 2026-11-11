@@ -42,17 +42,19 @@ files between restarts.
 
 Configuration is supplied through `.env`; do not commit that file.
 
-| Variable | Example | Purpose |
+| Name | Meaning | Default |
 |---|---|---|
-| `ELK_VERSION` | `8.15.3` | Shared Elasticsearch, Kibana, and Logstash image tag |
-| `ES_JAVA_OPTS` | `-Xms512m -Xmx512m` | Elasticsearch heap size |
-| `ES_HOST` | `http://elasticsearch:9200` | Elasticsearch URL used by application services |
-| `MONGO_URI` | `mongodb://mongodb:27017/logs` | MongoDB connection string |
-| `MONGO_ROOT_USERNAME` | `loglens_admin` | MongoDB root username |
-| `MONGO_ROOT_PASSWORD` | `change-me-in-local-env` | MongoDB root password; replace locally |
-| `REDIS_URL` | `redis://redis:6379/0` | Redis connection string |
-| `UPLOAD_DIR` | `/uploads` | Upload directory used by Flask |
-| `MAX_UPLOAD_MB` | `50` | Maximum upload size |
+| `ELK_VERSION` | Shared Elasticsearch, Kibana, and Logstash image tag | `8.15.3` |
+| `ES_HOST` | Elasticsearch URL used by Flask | `http://elasticsearch:9200` |
+| `ES_JAVA_OPTS` | Elasticsearch heap size | `-Xms512m -Xmx512m` |
+| `MONGO_ROOT_USER` | MongoDB root username | `loglens_admin` |
+| `MONGO_ROOT_PASSWORD` | MongoDB root password; replace locally | `replace-with-a-local-password` |
+| `MONGO_URI` | MongoDB server connection string | `mongodb://mongodb:27017` |
+| `MONGO_DB` | MongoDB application database name | `logs` |
+| `REDIS_URL` | Redis connection string | `redis://redis:6379/0` |
+| `FLASK_ENV` | Flask runtime environment | `development` |
+| `UPLOAD_DIR` | Upload directory used by Flask | `/uploads` |
+| `MAX_UPLOAD_MB` | Maximum upload size in megabytes | `100` |
 
 Copy `.env.example` to `.env` and adjust values for the local environment.
 
