@@ -1,6 +1,7 @@
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION}
+    restart: unless-stopped
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
@@ -24,6 +25,7 @@ services:
 
   kibana:
     image: docker.elastic.co/kibana/kibana:${ELK_VERSION}
+    restart: unless-stopped
     environment:
       ELASTICSEARCH_HOSTS: http://elasticsearch:9200
     ports:
@@ -42,6 +44,7 @@ services:
 
   logstash:
     image: docker.elastic.co/logstash/logstash:${ELK_VERSION}
+    restart: unless-stopped
     command: ["logstash", "-f", "/usr/share/logstash/pipeline", "--path.data", "/usr/share/logstash/data"]
     ports:
       - "9600:9600"
@@ -55,9 +58,45 @@ services:
       elasticsearch:
         condition: service_healthy
 
+  mongodb:
+    image: mongo:7
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db
+    networks:
+      - elk-net
+    healthcheck:
+      test: ["CMD-SHELL", "mongosh --quiet --eval 'db.adminCommand({ ping: 1 }).ok' | grep -q 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    networks:
+      - elk-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
 volumes:
   esdata:
   logstashdata:
+  mongodata:
+  redisdata:
   uploads:
 
 networks:
