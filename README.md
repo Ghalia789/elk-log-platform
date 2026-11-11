@@ -52,6 +52,37 @@ python scripts/generate_logs.py --count 1000 --format csv --output uploads/sampl
 The default count is 10,000 logs. Use `--output -` to write the selected
 format to standard output.
 
+## Ingest logs with Logstash
+
+Generate a CSV file, start the stack, and copy the file into the shared named
+volume through the read-write webapp mount. The filename prefix is the upload
+ID used by the Logstash `dissect` filter:
+
+```bash
+python scripts/generate_logs.py --count 1000 --format csv --output /tmp/loglens.csv
+docker compose up -d
+UPLOAD_ID=$(python3 -c 'import uuid; print(uuid.uuid4())')
+docker compose cp /tmp/loglens.csv "webapp:/uploads/${UPLOAD_ID}__sample.csv"
+```
+
+Follow Logstash processing and inspect completed files:
+
+```bash
+docker compose logs -f logstash
+docker compose exec logstash sh -c 'cat /usr/share/logstash/data/completed_csv.log'
+```
+
+Check the generated daily indices and documents in Elasticsearch:
+
+```bash
+curl "http://localhost:9200/_cat/indices/logs-saas-*?v"
+curl "http://localhost:9200/logs-saas-*/_search?pretty&size=3"
+```
+
+In Kibana, open **Stack Management > Data Views**, create a data view named
+`logs-saas-*`, and select `@timestamp` as the time field. Then use **Discover**
+to inspect the indexed log documents.
+
 ## Environment variables
 
 Configuration is supplied through `.env`; do not commit that file.

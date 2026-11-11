@@ -28,8 +28,9 @@ Last reviewed: 2026-11-11
 - Flask routes are currently a minimal health/Hello World surface; upload,
   search, MongoDB, Redis, and Elasticsearch application integrations are not
   implemented yet.
-- Logstash `csv.conf` and `json.conf` are placeholders. They still need file
-  input, parsing, metadata enrichment, and Elasticsearch output configuration.
+- Logstash CSV and JSON pipelines now read the shared upload volume, parse the
+  generated fields, add upload IDs, and write to `logs-saas-*`. They still
+  need broader fixture coverage and an end-to-end automated test.
 - `elasticsearch/index-template.json` is empty and needs the `logs-saas-*`
   index template and mappings.
 - Kibana exports and dashboards have not been added.
