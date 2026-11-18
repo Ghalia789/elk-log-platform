@@ -61,10 +61,11 @@ services:
 
   mongodb:
     image: mongo:7
+    profiles: ["local-mongo"]
     restart: unless-stopped
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:-loglens_admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-replace-with-a-local-password}
     ports:
       - "27017:27017"
     volumes:
@@ -106,8 +107,6 @@ services:
       - elk-net
     depends_on:
       elasticsearch:
-        condition: service_healthy
-      mongodb:
         condition: service_healthy
       redis:
         condition: service_healthy
