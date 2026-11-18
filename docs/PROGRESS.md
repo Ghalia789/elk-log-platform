@@ -16,6 +16,10 @@ Last reviewed: 2026-11-18
 - `.env.example` documents the Atlas configuration by default and the optional
   local MongoDB profile. `.env` is ignored by Git.
 - Flask application factory implemented with `/` and `/health` routes.
+- Lazy Elasticsearch, MongoDB, and Redis clients implemented with retrying
+  startup checks, dependency-aware health output, and MongoDB startup indexes.
+- Upload preview and upload endpoints implemented with pure CSV, JSON, and TXT
+  validation plus atomic file writes into the shared uploads volume.
 - Flask image uses Python 3.11, installs dependencies before application code,
   runs Gunicorn on port 8000, and uses a non-root user.
 - Faker-based SaaS log generator implemented at
@@ -26,9 +30,8 @@ Last reviewed: 2026-11-18
 
 ## Current limitations
 
-- Flask routes are currently a minimal health/Hello World surface; upload,
-  search, MongoDB Atlas, Redis, and Elasticsearch application integrations are
-  not implemented yet.
+- Flask routes currently provide health, upload preview, and upload behavior;
+  search and upload metadata persistence are not implemented yet.
 - Logstash CSV and JSON pipelines now read the shared upload volume, parse the
   generated fields, add upload IDs, and write to `logs-saas-*`. They still
   need broader fixture coverage and an end-to-end automated test.
@@ -41,9 +44,7 @@ Last reviewed: 2026-11-18
 
 ## Next implementation steps
 
-1. Implement Flask upload handling with the required
-   `<upload_id>__<original_name>` naming convention.
-2. Add MongoDB Atlas metadata/search-history persistence and Redis
+1. Add MongoDB Atlas metadata/search-history persistence and Redis
   caching/sessions.
-3. Add Elasticsearch mappings, search endpoints, and focused tests.
-4. Import Kibana dashboards and document the end-to-end upload-to-search flow.
+2. Add Elasticsearch mappings, search endpoints, and focused tests.
+3. Import Kibana dashboards and document the end-to-end upload-to-search flow.

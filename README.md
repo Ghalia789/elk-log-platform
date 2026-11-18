@@ -138,7 +138,7 @@ Copy `.env.example` to `.env` and adjust values for the local environment.
 | Kibana | 5601 | Dashboards and visualization |
 | Logstash | 9600 | Logstash monitoring API |
 | Flask webapp | 8000 | Upload and search API/UI |
-| MongoDB | 27017 | Metadata and search history |
+| MongoDB | 27017 | Local profile only; Atlas is the default |
 | Redis | 6379 | Cache and sessions |
 
 Check the ELK services with:
@@ -160,6 +160,12 @@ curl http://localhost:9600/?pretty
   available and inspect `docker compose logs mongodb`.
 - If Atlas cannot be reached, check the Atlas Network Access allowlist,
   database credentials, and the `MONGO_URI` value in the ignored `.env` file.
+- If the URI in `.env` looks correct but the container reports a different URI,
+  check for an exported shell override with `printenv MONGO_URI`; run
+  `unset MONGO_URI` and recreate the webapp so Compose reloads `.env`.
+- After recreating the webapp, wait for `docker compose ps webapp` to show
+  `healthy` before calling `curl http://localhost:8000/health`; an immediate
+  request can reset while Gunicorn is still booting.
 - If Logstash does not process uploads, confirm the file is in the shared
   `uploads` volume and that a configuration exists in `logstash/pipeline/`.
 - Recreate containers without deleting data with `docker compose up -d --force-recreate`.
