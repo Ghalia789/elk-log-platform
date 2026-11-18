@@ -96,6 +96,7 @@ def save_upload():
                 temporary_file.write(content)
                 temporary_file.flush()
                 os.fsync(temporary_file.fileno())
+            os.chmod(temporary_path, 0o644)
             os.replace(temporary_path, destination)
         except Exception:
             if temporary_path is not None:
