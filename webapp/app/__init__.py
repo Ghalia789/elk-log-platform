@@ -4,6 +4,7 @@ import logging
 import os
 
 from flask import Flask, jsonify
+from flasgger import Swagger
 from werkzeug.exceptions import RequestEntityTooLarge
 
 from app.clients import startup_checks
@@ -27,6 +28,18 @@ def create_app() -> Flask:
 	app = Flask(__name__)
 	max_upload_mb = int(os.getenv("MAX_UPLOAD_MB", "100"))
 	app.config["MAX_CONTENT_LENGTH"] = max_upload_mb * 1024 * 1024
+	Swagger(
+		app,
+		config={"oauth": {}},
+		template={
+			"swagger": "2.0",
+			"info": {
+				"title": "LogLens API",
+				"description": "Log upload, preview, and dependency health API for the LogLens ELK platform.",
+				"version": "1.0.0",
+			},
+		},
+	)
 	app.register_blueprint(main)
 	app.register_blueprint(upload)
 

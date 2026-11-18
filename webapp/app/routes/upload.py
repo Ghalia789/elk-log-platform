@@ -44,17 +44,66 @@ def _validation_error_response(error: ValidationError):
 
 @upload.get("/upload")
 def upload_form():
-    return (
-        "<!doctype html><html><body>"
-        '<form method="post" action="/upload" enctype="multipart/form-data">'
-        '<input type="file" name="file" required>'
-        '<button type="submit">Submit</button>'
-        "</form></body></html>"
-    )
+    return """<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Upload logs - LogLens</title>
+  <style>
+    body { margin: 0; font-family: system-ui, sans-serif; background: #f4f7fb; color: #172033; }
+    nav { display: flex; align-items: center; gap: 1.25rem; padding: 1rem 2rem; background: #172033; }
+    nav strong { color: white; margin-right: auto; }
+    nav a { color: #dfe8f5; text-decoration: none; }
+    nav a:hover { color: white; }
+    main { max-width: 760px; margin: 4rem auto; padding: 0 1.5rem; }
+  </style>
+</head>
+<body>
+  <nav aria-label="Main navigation">
+    <strong>LogLens</strong>
+    <a href="/">Home</a>
+    <a href="/upload">Upload</a>
+    <a href="/health">Health</a>
+    <a href="/apidocs/">Swagger</a>
+    <a href="http://localhost:5601" target="_blank" rel="noopener">Kibana</a>
+  </nav>
+  <main>
+    <h1>Upload logs</h1>
+    <form method="post" action="/upload" enctype="multipart/form-data">
+      <input type="file" name="file" required>
+      <button type="submit">Submit</button>
+    </form>
+  </main>
+</body>
+</html>"""
 
 
 @upload.post("/upload/preview")
 def preview_upload():
+    """
+    Preview and validate a log file before upload.
+    ---
+    tags:
+      - uploads
+    consumes:
+      - multipart/form-data
+    parameters:
+      - name: file
+        in: formData
+        type: file
+        required: true
+        description: CSV, newline-delimited JSON, or TXT log file.
+    produces:
+      - application/json
+    responses:
+      200:
+        description: Validated file metadata and preview lines.
+      400:
+        description: Invalid or unsupported upload.
+      413:
+        description: Uploaded file exceeds the configured size limit.
+    """
     try:
         uploaded_file = _uploaded_file()
         content = _read_upload(uploaded_file)
@@ -70,6 +119,29 @@ def preview_upload():
 
 @upload.post("/upload")
 def save_upload():
+    """
+    Validate and atomically save a log file for Logstash ingestion.
+    ---
+    tags:
+      - uploads
+    consumes:
+      - multipart/form-data
+    parameters:
+      - name: file
+        in: formData
+        type: file
+        required: true
+        description: CSV, newline-delimited JSON, or TXT log file.
+    produces:
+      - application/json
+    responses:
+      202:
+        description: Upload accepted and stored in the shared uploads volume.
+      400:
+        description: Invalid filename or unsupported file content.
+      413:
+        description: Uploaded file exceeds the configured size limit.
+    """
     try:
         uploaded_file = _uploaded_file()
         content = _read_upload(uploaded_file)

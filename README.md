@@ -39,7 +39,11 @@ start the profile:
 docker compose --profile local-mongo up -d
 ```
 
-Open Kibana at http://localhost:5601. Stop the stack with:
+Open Kibana at http://localhost:5601.
+Open Swagger UI at http://localhost:8000/apidocs/ to inspect and try the Flask API.
+The generated Swagger 2.0 specification is available at http://localhost:8000/apispec_1.json.
+
+Stop the stack with:
 
 ```bash
 docker compose down
