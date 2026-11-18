@@ -99,6 +99,12 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    environment:
+      ES_HOST: ${ES_HOST:-http://elasticsearch:9200}
+      MONGO_URI: ${MONGO_URI}
+      MONGO_DB: ${MONGO_DB:-loglens}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
     ports:
       - "8000:8000"
     volumes:

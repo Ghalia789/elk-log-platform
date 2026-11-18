@@ -123,6 +123,7 @@ Configuration is supplied through `.env`; do not commit that file.
 | `MONGO_ROOT_USER` | Local MongoDB root username; profile only | `loglens_admin` |
 | `MONGO_ROOT_PASSWORD` | Local MongoDB root password; profile only | `replace-with-a-local-password` |
 | `REDIS_URL` | Redis connection string | `redis://redis:6379/0` |
+| `LOG_LEVEL` | Python logging level | `INFO` |
 | `FLASK_ENV` | Flask runtime environment | `development` |
 | `UPLOAD_DIR` | Upload directory used by Flask | `/uploads` |
 | `MAX_UPLOAD_MB` | Maximum upload size in megabytes | `100` |
