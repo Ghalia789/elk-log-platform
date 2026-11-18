@@ -32,8 +32,10 @@ Last reviewed: 2026-11-18
 - Logstash CSV and JSON pipelines now read the shared upload volume, parse the
   generated fields, add upload IDs, and write to `logs-saas-*`. They still
   need broader fixture coverage and an end-to-end automated test.
-- `elasticsearch/index-template.json` is empty and needs the `logs-saas-*`
-  index template and mappings.
+- `elasticsearch/index-template.json` defines the `logs-saas-*` data-stream
+  template with one shard, zero replicas, and the log field mappings. Existing
+  backing indices keep their original mappings; new backing indices use this
+  template.
 - Kibana exports and dashboards have not been added.
 - Automated tests are not implemented yet.
 

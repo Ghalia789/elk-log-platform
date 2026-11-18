@@ -93,6 +93,22 @@ In Kibana, open **Stack Management > Data Views**, create a data view named
 `logs-saas-*`, and select `@timestamp` as the time field. Then use **Discover**
 to inspect the indexed log documents.
 
+## Apply the Elasticsearch template
+
+With Elasticsearch running, apply the `logs-saas-*` index template:
+
+```bash
+./scripts/apply_template.sh
+```
+
+The script waits for Elasticsearch, then sends a `PUT` request to
+`_index_template/logs-saas`. Check the template and its mappings with:
+
+```bash
+curl "http://localhost:9200/_index_template/logs-saas?pretty"
+curl "http://localhost:9200/logs-saas-*/_mapping?pretty"
+```
+
 ## Environment variables
 
 Configuration is supplied through `.env`; do not commit that file.
