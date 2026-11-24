@@ -134,6 +134,17 @@ Configuration is supplied through `.env`; do not commit that file.
 
 Copy `.env.example` to `.env` and adjust values for the local environment.
 
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/upload` | Upload a validated log file |
+| `GET` | `/upload/<upload_id>/status` | Get upload indexing status |
+| `GET` | `/search` | Search logs with filters and pagination |
+| `GET` | `/search/history` | Get the latest 50 searches |
+| `GET` | `/api/v1/logs` | Search logs through the versioned API |
+| `GET` | `/api/v1/logs/<id>` | Get a log by Elasticsearch document ID |
+| `GET` | `/api/v1/files` | List uploaded file metadata |
+| `GET` | `/api/v1/stats` | Get log, file, and hourly statistics |
+
 ## Services and ports
 
 | Service | Port | Purpose |
