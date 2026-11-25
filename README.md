@@ -33,7 +33,7 @@ docker compose ps
 
 The default setup uses MongoDB Atlas through `MONGO_URI`. To use the optional
 local MongoDB container instead, set `MONGO_URI=mongodb://mongodb:27017` and
-start the profile:
+set `MONGO_ROOT_PASSWORD` in `.env` before starting the profile:
 
 ```bash
 docker compose --profile local-mongo up -d
@@ -93,6 +93,9 @@ curl "http://localhost:9200/_cat/indices/logs-saas-*?v"
 curl "http://localhost:9200/logs-saas-*/_search?pretty&size=3"
 ```
 
+Valid CSV and JSON records are written to `logs-saas-*`. Events tagged with
+parser, date, mutation, or upload-ID failures are written to `logs-failed-*`.
+
 In Kibana, open **Stack Management > Data Views**, create a data view named
 `logs-saas-*`, and select `@timestamp` as the time field. Then use **Discover**
 to inspect the indexed log documents.
@@ -125,7 +128,7 @@ Configuration is supplied through `.env`; do not commit that file.
 | `MONGO_URI` | MongoDB Atlas URI by default, or local URI with the profile | `mongodb+srv://<username>:<password>@<cluster-host>/loglens` |
 | `MONGO_DB` | MongoDB application database name | `loglens` |
 | `MONGO_ROOT_USER` | Local MongoDB root username; profile only | `loglens_admin` |
-| `MONGO_ROOT_PASSWORD` | Local MongoDB root password; profile only | `replace-with-a-local-password` |
+| `MONGO_ROOT_PASSWORD` | Required local MongoDB root password; profile only | Set in `.env` |
 | `REDIS_URL` | Redis connection string | `redis://redis:6379/0` |
 | `LOG_LEVEL` | Python logging level | `INFO` |
 | `FLASK_ENV` | Flask runtime environment | `development` |
@@ -133,6 +136,22 @@ Configuration is supplied through `.env`; do not commit that file.
 | `MAX_UPLOAD_MB` | Maximum upload size in megabytes | `100` |
 
 Copy `.env.example` to `.env` and adjust values for the local environment.
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/upload` | Upload a validated log file |
+| `GET` | `/upload/<upload_id>/status` | Get upload indexing status |
+| `GET` | `/search` | Search logs with filters and pagination |
+| `GET` | `/search/history` | Get the latest 50 searches |
+| `GET` | `/api/v1/logs` | Search logs through the versioned API |
+| `GET` | `/api/v1/logs/<id>` | Get a log by Elasticsearch document ID |
+| `GET` | `/api/v1/files` | List uploaded file metadata |
+| `GET` | `/api/v1/stats` | Get log, file, and hourly statistics |
+
+## Development tests
+
+The service-free validation and search-query tests require no running services.
+Run them with `pytest -q`; pytest is listed in `requirements-dev.txt`.
 
 ## Services and ports
 

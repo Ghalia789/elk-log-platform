@@ -10,6 +10,9 @@ from pathlib import Path
 from flask import Blueprint, jsonify, request
 from werkzeug.utils import secure_filename
 
+from app.clients import get_es
+from app.models.files import create_file, get_file, update_status
+from app.services.cache import invalidate_searches
 from app.services.validation import ValidationError, preview_content, validate_upload
 
 logger = logging.getLogger(__name__)
@@ -183,6 +186,11 @@ def save_upload():
             file_format,
             destination,
         )
+        try:
+            create_file(upload_id, safe_name, str(destination), len(content), file_format)
+        except Exception as error:
+            logger.warning("Could not save upload metadata for %s: %s", upload_id, error)
+        invalidate_searches()
         return jsonify(
             upload_id=upload_id,
             filename=safe_name,
@@ -191,3 +199,30 @@ def save_upload():
         ), 202
     except ValidationError as error:
         return _validation_error_response(error)
+
+
+@upload.get("/upload/<upload_id>/status")
+def upload_status(upload_id):
+    try:
+        file_record = get_file(upload_id)
+        if file_record is None:
+            return jsonify(error="Upload not found.", code="not_found"), 404
+
+        count = get_es().count(
+            index="logs-saas-*",
+            query={"term": {"upload_id": upload_id}},
+        )["count"]
+        uploaded_at = file_record["uploaded_at"]
+        if uploaded_at.tzinfo is None:
+            uploaded_at = uploaded_at.replace(tzinfo=timezone.utc)
+        if count:
+            status = "indexed"
+        elif (datetime.now(timezone.utc) - uploaded_at).total_seconds() > 60:
+            status = "failed"
+        else:
+            status = "pending"
+        update_status(upload_id, status, count)
+        return jsonify(status=status, log_count=count)
+    except Exception:
+        logger.exception("Could not retrieve upload status for %s", upload_id)
+        return jsonify(error="Upload status unavailable.", code="status_unavailable"), 503

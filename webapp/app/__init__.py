@@ -9,6 +9,8 @@ from werkzeug.exceptions import RequestEntityTooLarge
 
 from app.clients import startup_checks
 from app.routes import main
+from app.routes.api import api
+from app.routes.search import search
 from app.routes.upload import upload
 
 
@@ -30,7 +32,16 @@ def create_app() -> Flask:
 	app.config["MAX_CONTENT_LENGTH"] = max_upload_mb * 1024 * 1024
 	Swagger(
 		app,
-		config={"oauth": {}},
+		config={
+			"oauth": {},
+			"headers": [],
+			"specs": [{
+				"endpoint": "apispec_1",
+				"route": "/apispec_1.json",
+				"rule_filter": lambda rule: True,
+				"model_filter": lambda tag: True,
+			}],
+		},
 		template={
 			"swagger": "2.0",
 			"info": {
@@ -42,6 +53,8 @@ def create_app() -> Flask:
 	)
 	app.register_blueprint(main)
 	app.register_blueprint(upload)
+	app.register_blueprint(search)
+	app.register_blueprint(api)
 
 	@app.errorhandler(RequestEntityTooLarge)
 	def handle_request_entity_too_large(error):
