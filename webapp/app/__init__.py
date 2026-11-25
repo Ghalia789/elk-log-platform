@@ -34,6 +34,7 @@ def create_app() -> Flask:
 		app,
 		config={
 			"oauth": {},
+			"headers": [],
 			"specs": [{
 				"endpoint": "apispec_1",
 				"route": "/apispec_1.json",

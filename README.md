@@ -93,6 +93,9 @@ curl "http://localhost:9200/_cat/indices/logs-saas-*?v"
 curl "http://localhost:9200/logs-saas-*/_search?pretty&size=3"
 ```
 
+Valid CSV and JSON records are written to `logs-saas-*`. Events tagged with
+parser, date, mutation, or upload-ID failures are written to `logs-failed-*`.
+
 In Kibana, open **Stack Management > Data Views**, create a data view named
 `logs-saas-*`, and select `@timestamp` as the time field. Then use **Discover**
 to inspect the indexed log documents.
@@ -144,6 +147,11 @@ Copy `.env.example` to `.env` and adjust values for the local environment.
 | `GET` | `/api/v1/logs/<id>` | Get a log by Elasticsearch document ID |
 | `GET` | `/api/v1/files` | List uploaded file metadata |
 | `GET` | `/api/v1/stats` | Get log, file, and hourly statistics |
+
+## Development tests
+
+The service-free validation and search-query tests require no running services.
+Run them with `pytest -q`; pytest is listed in `requirements-dev.txt`.
 
 ## Services and ports
 

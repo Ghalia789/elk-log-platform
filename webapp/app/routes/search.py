@@ -7,7 +7,7 @@ from flask import Blueprint, jsonify, request
 
 from app.clients import get_es, get_mongo_db
 from app.services.cache import get_search, set_search
-from app.services.search_query import build_query, parse_search_params
+from app.services.search_query import build_query, pagination_offset, parse_search_params
 
 logger = logging.getLogger(__name__)
 search = Blueprint("search", __name__)
@@ -36,7 +36,7 @@ def run_search(params):
 		response = get_es().search(
 			index="logs-saas-*",
 			query=build_query(params),
-			from_=(params["page"] - 1) * params["per_page"],
+			from_=pagination_offset(params),
 			size=params["per_page"],
 			sort=[{"@timestamp" if params["sort"] == "timestamp" else params["sort"]: {"order": params["order"]}}],
 			track_total_hits=True,

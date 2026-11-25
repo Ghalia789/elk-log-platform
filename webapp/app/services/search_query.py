@@ -69,3 +69,7 @@ def build_query(params):
 	if date_range:
 		filters.append({"range": {"@timestamp": date_range}})
 	return {"bool": {"must": must, "filter": filters}}
+
+
+def pagination_offset(params):
+	return (params["page"] - 1) * params["per_page"]
