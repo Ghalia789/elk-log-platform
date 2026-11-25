@@ -9,6 +9,17 @@ main = Blueprint("main", __name__)
 
 @main.get("/")
 def index():
+    """
+    Return the LogLens home page.
+    ---
+    tags:
+      - pages
+    produces:
+      - text/html
+    responses:
+      200:
+        description: LogLens home page.
+    """
     return """<!doctype html>
 <html lang="en">
 <head>

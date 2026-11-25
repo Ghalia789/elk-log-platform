@@ -35,6 +35,7 @@ def create_app() -> Flask:
 		config={
 			"oauth": {},
 			"headers": [],
+			"static_url_path": "/flasgger_static",
 			"specs": [{
 				"endpoint": "apispec_1",
 				"route": "/apispec_1.json",
