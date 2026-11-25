@@ -1,7 +1,7 @@
 timestamp,level,service,endpoint,http_method,status_code,response_time_ms,client_ip,user_id,trace_id,message
-2026-11-25T10:00:00Z,INFO,auth,/login,POST,200,12.5,192.0.2.1,u1,t1,login ok
-2026-11-25T10:01:00Z,ERROR,api,/items,GET,500,35.75,192.0.2.2,u2,t2,request failed
-2026-11-25T10:02:00Z,WARN,worker,/jobs,POST,202,8.25,192.0.2.3,u3,t3,job queued
-2026-11-25T10:03:00Z,INFO,auth,/logout,POST,204,4.0,192.0.2.4,u4,t4,logout ok
-2026-11-25T10:04:00Z,CRITICAL,api,/health,GET,503,91.5,192.0.2.5,u5,t5,service unavailable
-2026-11-25T10:05:00Z,ERROR,api,/broken,GET,500,20.0,192.0.2.6,u6,t6,"unterminated message
+2026-11-25T10:00:00Z,INFO,auth,/api/v1/login,POST,200,12.5,8.8.8.8,user_1,trace1,login ok
+2026-11-25T10:01:00Z,ERROR,api,/api/v1/items,GET,500,35.75,1.1.1.1,user_2,trace2,request failed
+2026-11-25T10:02:00Z,WARNING,worker,/internal/jobs,POST,202,8.25,9.9.9.9,user_3,trace3,job queued
+2026-11-25T10:03:00Z,INFO,auth,/api/v1/logout,POST,204,4.0,208.67.222.222,user_4,trace4,logout ok
+2026-11-25T10:04:00Z,CRITICAL,api,/api/v1/health,GET,503,91.5,8.8.4.4,user_5,trace5,service unavailable
+not-a-date,ERROR,api,/api/v1/broken,GET,500,20.0,4.2.2.2,user_6,trace6,invalid timestamp
