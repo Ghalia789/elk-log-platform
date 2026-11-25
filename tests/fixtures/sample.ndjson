@@ -1,6 +1,6 @@
-{"timestamp":"2026-11-25T10:00:00Z","level":"INFO","service":"auth","endpoint":"/login","status_code":200,"response_time_ms":12.5,"message":"login ok"}
-{"timestamp":"2026-11-25T10:01:00Z","level":"ERROR","service":"api","endpoint":"/items","status_code":500,"response_time_ms":35.75,"message":"request failed"}
-{"timestamp":"2026-11-25T10:02:00Z","level":"WARN","service":"worker","endpoint":"/jobs","status_code":202,"response_time_ms":8.25,"message":"job queued"}
-{"timestamp":"2026-11-25T10:03:00Z","level":"INFO","service":"auth","endpoint":"/logout","status_code":204,"response_time_ms":4.0,"message":"logout ok"}
-{"timestamp":"2026-11-25T10:04:00Z","level":"CRITICAL","service":"api","endpoint":"/health","status_code":503,"response_time_ms":91.5,"message":"service unavailable"}
-{"timestamp":"2026-11-25T10:05:00Z","level":"ERROR","service":"api","message":broken}
+{"timestamp":"2026-11-25T10:00:00Z","level":"INFO","service":"auth","endpoint":"/api/v1/login","http_method":"POST","status_code":200,"response_time_ms":12.5,"client_ip":"8.8.8.8","user_id":"user_1","trace_id":"trace1","message":"login ok"}
+{"timestamp":"2026-11-25T10:01:00Z","level":"ERROR","service":"api","endpoint":"/api/v1/items","http_method":"GET","status_code":500,"response_time_ms":35.75,"client_ip":"1.1.1.1","user_id":"user_2","trace_id":"trace2","message":"request failed"}
+{"timestamp":"2026-11-25T10:02:00Z","level":"WARNING","service":"worker","endpoint":"/internal/jobs","http_method":"POST","status_code":202,"response_time_ms":8.25,"client_ip":"9.9.9.9","user_id":"user_3","trace_id":"trace3","message":"job queued"}
+{"timestamp":"2026-11-25T10:03:00Z","level":"INFO","service":"auth","endpoint":"/api/v1/logout","http_method":"POST","status_code":204,"response_time_ms":4.0,"client_ip":"208.67.222.222","user_id":"user_4","trace_id":"trace4","message":"logout ok"}
+{"timestamp":"2026-11-25T10:04:00Z","level":"CRITICAL","service":"api","endpoint":"/api/v1/health","http_method":"GET","status_code":503,"response_time_ms":91.5,"client_ip":"8.8.4.4","user_id":"user_5","trace_id":"trace5","message":"service unavailable"}
+{"timestamp":"not-a-date","level":"ERROR","service":"api","endpoint":"/api/v1/broken","http_method":"GET","status_code":500,"response_time_ms":20.0,"client_ip":"4.2.2.2","user_id":"user_6","trace_id":"trace6","message":"invalid timestamp"}
