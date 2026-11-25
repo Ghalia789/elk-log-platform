@@ -33,7 +33,7 @@ docker compose ps
 
 The default setup uses MongoDB Atlas through `MONGO_URI`. To use the optional
 local MongoDB container instead, set `MONGO_URI=mongodb://mongodb:27017` and
-start the profile:
+set `MONGO_ROOT_PASSWORD` in `.env` before starting the profile:
 
 ```bash
 docker compose --profile local-mongo up -d
@@ -128,7 +128,7 @@ Configuration is supplied through `.env`; do not commit that file.
 | `MONGO_URI` | MongoDB Atlas URI by default, or local URI with the profile | `mongodb+srv://<username>:<password>@<cluster-host>/loglens` |
 | `MONGO_DB` | MongoDB application database name | `loglens` |
 | `MONGO_ROOT_USER` | Local MongoDB root username; profile only | `loglens_admin` |
-| `MONGO_ROOT_PASSWORD` | Local MongoDB root password; profile only | `replace-with-a-local-password` |
+| `MONGO_ROOT_PASSWORD` | Required local MongoDB root password; profile only | Set in `.env` |
 | `REDIS_URL` | Redis connection string | `redis://redis:6379/0` |
 | `LOG_LEVEL` | Python logging level | `INFO` |
 | `FLASK_ENV` | Flask runtime environment | `development` |

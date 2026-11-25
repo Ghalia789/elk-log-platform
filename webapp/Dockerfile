@@ -14,5 +14,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 
 EXPOSE 8000
 
+USER app
+
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "app:create_app()"]
