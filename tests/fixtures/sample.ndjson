@@ -1,0 +1,6 @@
+{"timestamp":"2026-11-25T10:00:00Z","level":"INFO","service":"auth","endpoint":"/login","status_code":200,"response_time_ms":12.5,"message":"login ok"}
+{"timestamp":"2026-11-25T10:01:00Z","level":"ERROR","service":"api","endpoint":"/items","status_code":500,"response_time_ms":35.75,"message":"request failed"}
+{"timestamp":"2026-11-25T10:02:00Z","level":"WARN","service":"worker","endpoint":"/jobs","status_code":202,"response_time_ms":8.25,"message":"job queued"}
+{"timestamp":"2026-11-25T10:03:00Z","level":"INFO","service":"auth","endpoint":"/logout","status_code":204,"response_time_ms":4.0,"message":"logout ok"}
+{"timestamp":"2026-11-25T10:04:00Z","level":"CRITICAL","service":"api","endpoint":"/health","status_code":503,"response_time_ms":91.5,"message":"service unavailable"}
+{"timestamp":"2026-11-25T10:05:00Z","level":"ERROR","service":"api","message":broken}
