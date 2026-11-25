@@ -68,13 +68,13 @@ def search_logs():
 	try:
 		params = parse_search_params(request.args)
 	except ValueError as error:
-		return jsonify(error=str(error), code="invalid_parameters"), 400
+		return jsonify(error=str(error), code="invalid_parameters"), 400, {}
 	try:
 		result, cache_status = run_search(params)
 		return jsonify(result), 200, {"X-Cache": cache_status}
 	except Exception:
 		logger.exception("Log search failed")
-		return jsonify(error="Search service unavailable.", code="search_unavailable"), 503
+		return jsonify(error="Search service unavailable.", code="search_unavailable"), 503, {}
 
 
 @search.get("/search/history")

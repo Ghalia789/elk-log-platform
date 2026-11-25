@@ -19,8 +19,9 @@ def test_valid_csv_passes_validation():
 
 def test_csv_with_wrong_column_count_fails():
 	header = ",".join(EXPECTED_COLUMNS)
+	content = f"{header}\nonly,two\n".encode()
 	with pytest.raises(ValidationError):
-		validate_csv(f"{header}\nonly,two\n".encode())
+		validate_csv(content)
 
 
 def test_invalid_json_line_fails():

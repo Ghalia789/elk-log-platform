@@ -8,7 +8,7 @@ from app.clients import get_redis
 
 def _search_key(params):
 	normalized = json.dumps(params, sort_keys=True, separators=(",", ":"))
-	return "cache:search:" + hashlib.sha1(normalized.encode("utf-8")).hexdigest()
+	return "cache:search:" + hashlib.sha256(normalized.encode("utf-8")).hexdigest()
 
 
 def _get_json(key):
