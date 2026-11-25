@@ -203,6 +203,34 @@ def save_upload():
 
 @upload.get("/upload/<upload_id>/status")
 def upload_status(upload_id):
+    """
+    Get the indexing status for an uploaded file.
+    ---
+    tags:
+      - uploads
+    parameters:
+      - name: upload_id
+        in: path
+        type: string
+        required: true
+    produces:
+      - application/json
+    responses:
+      200:
+        description: Upload indexing status and indexed log count.
+        schema:
+          type: object
+          properties:
+            status:
+              type: string
+              enum: [pending, indexed, failed]
+            log_count:
+              type: integer
+      404:
+        description: Upload not found.
+      503:
+        description: Upload status unavailable.
+    """
     try:
         file_record = get_file(upload_id)
         if file_record is None:

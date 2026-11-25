@@ -33,6 +33,39 @@ def _file_json(document):
 
 @api.get("/logs")
 def logs():
+	"""
+	Search indexed log events through the versioned API.
+	---
+	tags:
+	  - logs
+	parameters:
+	  - {name: q, in: query, type: string, required: false, description: Text query matched against message.}
+	  - {name: level, in: query, type: string, required: false}
+	  - {name: service, in: query, type: string, required: false}
+	  - {name: from, in: query, type: string, format: date-time, required: false}
+	  - {name: to, in: query, type: string, format: date-time, required: false}
+	  - {name: page, in: query, type: integer, minimum: 1, default: 1, required: false}
+	  - {name: per_page, in: query, type: integer, minimum: 1, maximum: 200, default: 50, required: false}
+	  - {name: sort, in: query, type: string, enum: [timestamp, level, service], default: timestamp, required: false}
+	  - {name: order, in: query, type: string, enum: [asc, desc], default: desc, required: false}
+	produces:
+	  - application/json
+	responses:
+	  200:
+	    description: Search results and pagination metadata.
+	    schema:
+	      type: object
+	      properties:
+	        total: {type: integer}
+	        page: {type: integer}
+	        per_page: {type: integer}
+	        took_ms: {type: integer}
+	        items: {type: array, items: {type: object}}
+	  400:
+	    description: Invalid search parameters.
+	  503:
+	    description: Search service unavailable.
+	"""
 	try:
 		params = parse_search_params(request.args)
 		result, cache_status = run_search(params)
@@ -46,6 +79,37 @@ def logs():
 
 @api.get("/logs/<log_id>")
 def log_by_id(log_id):
+	"""
+	Retrieve one indexed log event by Elasticsearch document ID.
+	---
+	tags:
+	  - logs
+	parameters:
+	  - name: log_id
+	    in: path
+	    type: string
+	    required: true
+	produces:
+	  - application/json
+	responses:
+	  200:
+	    description: The requested log event.
+	    schema:
+	      type: object
+	      properties:
+	        id: {type: string}
+	        timestamp: {type: string, format: date-time}
+	        level: {type: string}
+	        service: {type: string}
+	        endpoint: {type: string}
+	        status_code: {type: integer}
+	        response_time_ms: {type: number}
+	        message: {type: string}
+	  404:
+	    description: Log event not found.
+	  503:
+	    description: Log service unavailable.
+	"""
 	try:
 		response = get_es().search(
 			index="logs-saas-*",
@@ -63,6 +127,34 @@ def log_by_id(log_id):
 
 @api.get("/files")
 def files():
+	"""
+	List uploaded file metadata.
+	---
+	tags:
+	  - uploads
+	parameters:
+	  - {name: status, in: query, type: string, required: false, enum: [pending, indexed, failed]}
+	  - {name: from, in: query, type: string, format: date-time, required: false, description: Include uploads at or after this time.}
+	  - {name: to, in: query, type: string, format: date-time, required: false, description: Include uploads at or before this time.}
+	  - {name: page, in: query, type: integer, minimum: 1, default: 1, required: false}
+	  - {name: per_page, in: query, type: integer, minimum: 1, maximum: 200, default: 50, required: false}
+	produces:
+	  - application/json
+	responses:
+	  200:
+	    description: Uploaded files and pagination metadata.
+	    schema:
+	      type: object
+	      properties:
+	        items: {type: array, items: {type: object}}
+	        total: {type: integer}
+	        page: {type: integer}
+	        per_page: {type: integer}
+	  400:
+	    description: Invalid query parameters.
+	  503:
+	    description: File service unavailable.
+	"""
 	try:
 		params = parse_search_params(request.args)
 		status = request.args.get("status") or None
@@ -84,6 +176,28 @@ def files():
 
 @api.get("/stats")
 def stats():
+	"""
+	Return aggregate log and upload statistics.
+	---
+	tags:
+	  - statistics
+	produces:
+	  - application/json
+	responses:
+	  200:
+	    description: Aggregate counts and log breakdowns.
+	    schema:
+	      type: object
+	      properties:
+	        total_logs: {type: integer}
+	        logs_today: {type: integer}
+	        error_logs: {type: integer}
+	        files_uploaded: {type: integer}
+	        logs_by_level: {type: object}
+	        logs_per_hour: {type: array, items: {type: object}}
+	  503:
+	    description: Statistics service unavailable.
+	"""
 	result = get_stats()
 	if result is not None:
 		return jsonify(result)
